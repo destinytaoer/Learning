@@ -1,0 +1,9 @@
+{
+  "usingComponents": {},
+  "backgroundTextStyle": "dark",
+  "enablePullDownRefresh": true,
+  "backgroundColor": "#ff0",
+  "navigationBarBackgroundColor": "#fff",
+  "navigationBarTitleText": "记事本",
+  "navigationBarTextStyle": "black"
+}

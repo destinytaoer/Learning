@@ -1,0 +1,16 @@
+/* pages/note/note-detail/note-detail.wxss */
+.container {
+  padding: 40rpx;
+}
+.container label {
+  font-size: 40rpx;
+  line-height: 60rpx;
+}
+
+.container .title, .container .content {
+  border: 1px solid #aaa;
+  width: 100%;
+}
+.container .add {
+  margin-top: 20rpx;
+}

@@ -1,0 +1,34 @@
+.list-container {
+  display: flex;
+  flex-direction: row;
+  margin: 10rpx;
+  border: 1px solid #eee;
+  box-shadow: 1px 1px 2px #0e0e0e;
+}
+.list-left, .list-right {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+.list-left {
+  width: 200rpx;
+  align-items: center;
+}
+.list-left .list-title {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
+}
+.list-left .list-name {
+  font-size: 30rpx;
+}
+.list-right {
+  flex: 1;
+}
+.list-right .list-content {
+  width: 500rpx;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  font-size: 24rpx;
+}

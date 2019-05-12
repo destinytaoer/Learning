@@ -1,0 +1,16 @@
+/* pages/index/index.wxss */
+@import 'list-tmpl/list-tmpl.wxss';
+
+.container {
+
+}
+.container .title {
+  font-size: 20px;
+}
+swiper {
+  height: 500rpx;
+}
+swiper image {
+  width: 100%;
+  /* height: 100%; */
+}

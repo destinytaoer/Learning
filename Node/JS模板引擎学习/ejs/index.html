@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <div id="root"></div>
+  <script src="./node_modules/ejs/ejs.min.js"></script>
+  <script>
+    /**
+     * <% 流程控制，写代码
+     * <%= 要输出的数据，转义的 HTML 字符串
+     * <%- 要输出的数据，HTML
+     * <%# 注释
+     * <%% 输出字符串 '<%'
+     * <%_ 删除前面的空格
+     * %> 正常结束
+     * _%> 删除后面的空格
+     * -%> 删除紧随其后的换行符
+     */
+
+    /**
+     * for 
+     * <% for (let i = 0; i < arr.length; i++) { %>
+     *   <%= arr[i] %>
+     * <% } %>
+     * 
+     * if
+     * <% if (flag) { %>
+     *   
+     * <% } %>
+     * 
+     * include
+     * <%- include(filename, data) %>
+     */
+    /**
+     * 渲染
+     *   ejs.render(template，data, options)
+     * 变为函数渲染
+     *   let fun = ejs.compile(template, options)
+     *   fun(data)
+     * 读取文件渲染
+     *   ejs.renderFile(filename, data, options, function(err, str){
+     *     //=> str: HTML 字符串
+     *   })
+     */
+    let template = `
+      <% for (let i = 0; i < people.length; i++) { %>
+        <%= people[i] %>
+      <% } %>`
+    var people = ['aa', 'bb', 'cc'],
+    html = ejs.render(template, {people});
+    root.innerHTML = html
+  </script>
+</body>
+</html>

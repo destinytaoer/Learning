@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>虚拟 DOM</title>
+</head>
+<body>
+  <div id="root"></div>
+  <script src="./createElement.js"></script>
+  <script src="./render.js"></script>
+  <script src="./dom-diff.js"></script>
+  <script src="./patch.js"></script>
+  <script>
+    let virtualDOM = createElement('ul', { class: 'list' }, [
+      createElement('li', { class: 'item' }, ['第一个 li']),
+      createElement('li', { class: 'item' }, ['第二个 li']),
+      createElement('li', { class: 'item' }, ['第三个 li']),
+    ]);
+    let realDOM = render(virtualDOM);
+    renderDom(realDOM, window.root)
+    let virtualDOM2 = createElement('ul', { class: 'list-group' }, [
+      createElement('li', { class: 'item' }, ['第一个 li 改了']),
+      // createElement('li', { class: 'item' }, ['第二个 li']), 
+      "替换了",
+      // createElement('li', { class: 'item' }, ['第三个 li 改了']),
+    ]);
+
+    // 比较之后产生一个补丁
+    let patches = diff(virtualDOM, virtualDOM2);
+    console.log(patches);
+    patch(realDOM, patches);
+  </script>
+</body>
+</html>

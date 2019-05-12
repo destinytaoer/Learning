@@ -1,0 +1,34 @@
+{
+  "pages": [
+    "pages/note/note",
+    "pages/index/index",
+    "pages/index/detail/detail",
+    "pages/note/note-detail/note-detail"
+    
+  ],
+  "window": {
+    "backgroundTextStyle": "dark",
+    "enablePullDownRefresh": true,
+    "backgroundColor": "#ff0",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "首页",
+    "navigationBarTextStyle": "black"
+  },
+  "tabBar": {
+    "list": [{
+      "pagePath": "pages/index/index",
+      "text": "首页",
+      "iconPath": "",
+      "selectedIconPath": ""
+    },{
+      "pagePath": "pages/note/note",
+      "text": "记事本",
+      "iconPath": "",
+      "selectedIconPath": ""
+    }]
+  },
+  "sitemapLocation": "sitemap.json",
+  "requiredBackgroundModes": [
+    "audio"
+  ]
+}

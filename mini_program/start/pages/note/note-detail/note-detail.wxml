@@ -1,0 +1,12 @@
+<!--pages/note/note-detail/note-detail.wxml-->
+<view class='container'>
+  <view>
+    <label>标题</label>
+    <input class='title' placeholder='请输入标题' bindinput='changeTitle'></input>
+  </view>
+  <view>
+    <label>内容</label>
+    <textarea class='content' placeholder='请输入内容' bindinput='changeContent'></textarea>
+  </view>
+  <button class='add' type='primary' bindtap='add'>添加</button>
+</view>

@@ -1,0 +1,13 @@
+<!--pages/note/note.wxml-->
+<scroll-view scroll-y="{{true}}" style="height: 500rpx" bindscrolltolower='loadMore'>
+  <block wx:for='{{notes}}' wx:key>
+    <view class='note-container'>
+      <text class="note-title">{{item.title}}</text>
+      <text class="note-content">{{item.content}}</text>
+    </view>
+  </block>
+</scroll-view>
+<view class='btn-list'>
+  <button bindtap="toDetail" type='primary' class='btn' size='mini'>添加</button>
+  <button bindtap='clear' type='warn' class='btn' size='mini'>清除</button>
+</view>

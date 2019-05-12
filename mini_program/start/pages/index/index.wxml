@@ -1,0 +1,12 @@
+<!--pages/index/index.wxml-->
+<import src='list-tmpl/list-tmpl.wxml' />
+<view class='container'>
+  <swiper autoplay='{{true}}' interval='2000' indicator-dots='{{true}}' circular='{{true}}'>
+    <swiper-item wx:for="{{imgs}}" wx:key><image src='{{item}}'></image></swiper-item>
+  </swiper>
+  <block wx:for="{{lists}}" wx:key>
+    <view bindtap='toDetail' data-uid='{{item.id}}'>
+      <template is='list' data="{{...item}}"></template>
+    </view>
+  </block>
+</view>

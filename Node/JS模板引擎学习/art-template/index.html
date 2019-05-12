@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+  <div id="root"></div>
+<body>
+
+  <script src="./node_modules/art-template/lib/template-web.js"></script>
+  <script>
+    /**
+       * 基于模板名渲染模板
+       *   template(filename, data)
+       * 编译成函数渲染
+       *   let fun = template.compile(filename)
+       *   fun(data)
+       * 编译成函数并立刻执行渲染
+       *   template.render(source, data, options)
+       * 
+       * 因为浏览器不支持文件系统，所以 template(filename, data) 不支持传入文件路径
+       * 它内部使用 document.getElementById(filename).innerHTML 来获取模板
+       */
+  
+      /**
+       * 输出
+       * {{}} 转义
+       * 原文输出
+       * {{@ xxx}} 不转义
+       * 一级特殊变量
+       * $data
+       * 定义变量
+       * {{set temp = xxx}}
+       */ 
+  
+      /**
+       * if
+       * {{if v1}}
+       * {{else if v2}}
+       * {{/if}}
+       * for
+       * {{each arr}}
+       * {{$value}} {{$index}}
+       * {{/each}}
+       * target 支持 array 与 object 的迭代，其默认值为 $data。
+       * $value 与 $index 可以自定义：
+       * {{each target val key}}
+       *   {{val}} {{key}}
+       * {{/each}}
+       */
+  </script>
+
+  <script id="test" type="text/html">
+    <h2>{{user}}</h2>
+    {{if user}}
+    {{user}}
+    {{/if}}
+    {{each name value key}}
+      {{value}} {{key}}
+    {{/each}}
+    {{each obj value key}}
+      {{value}} {{key}}
+    {{/each}}
+  </script>
+  <script>
+    let html = template('test', {
+      user: 'aa',
+      name: ['aa', 'bb', 'cc'],
+      obj: {
+        wo: 'sd',
+        ni: 'sb'
+      }
+    });
+    root.innerHTML = html
+  </script>
+</body>
+
+</html>
