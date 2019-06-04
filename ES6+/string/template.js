@@ -6,6 +6,15 @@ let str = 'hello, ' + name;
 // 使用 ES6 字符串模板
 let str1 = `hello, ${name}`;
 
+// 原理解析
+// let str1 = "hello, ${name}";
+// function replace(str) {
+//   return str.replace(/\$\{([^}])\}/g, function (matched, key) {
+//     return eval(key);
+//   })
+// }
+// replace(str1);
+
 /* 其使用反引号进行包裹，里面的使用 ${} 包裹变量，简单实用。可以减少以往的大量 + 拼接，同时在反引号内还可以换行，增强拼接代码的可读性，尤其是在拼接 HTML 时 */
 let html = `
   <div>
@@ -26,7 +35,7 @@ function processStr(strArr, ...valArr) {
 var name1 = 'taoer'
 let newStr = processStr`hello, \n${name}, i am ${name1}`
 
-// 标签模板的一个重要应用，就是过滤 HTML 字符串，防止用户输入恶意内容。
+// 标签模板的一个重要应用，就是过滤 HTML 字符串，防止用户输入恶意内容。XXS 注入攻击
 let message =
   SaferHTML`<p>${sender} has sent you a message.</p>`;
 
