@@ -1,0 +1,15 @@
+<!--pages/picker/picker.wxml-->
+<!-- 三种 picker 默认 date time -->
+<!-- 设置了 start 和 end 会不灵敏 -->
+<picker mode="time" start="10:00" end="19:00" value='{{time}}' bindchange='timeEvent'>
+  <view>你选择的时间是：{{time}}</view>
+</picker>
+
+<picker value='{{date}}' mode="date" start='2019-01-01' end='2019-06-09' bindchange='dateEvent'>
+  <view>你选择的是： {{date}}</view>
+</picker>
+
+<picker range="{{array}}" bindchange='selector' value='val'>
+  <view>你选择的是: {{val}}</view>
+</picker>
+

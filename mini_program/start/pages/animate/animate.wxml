@@ -1,0 +1,2 @@
+<!--pages/animate/animate.wxml-->
+<view class='box' animation='{{animate}}'></view>

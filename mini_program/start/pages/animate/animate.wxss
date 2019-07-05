@@ -1,0 +1,9 @@
+/* pages/animate/animate.wxss */
+.box {
+  width: 300rpx;
+  height: 300rpx;
+  background: red;
+  position: absolute;
+  left: 100rpx;
+  top: 100rpx;
+}

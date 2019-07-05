@@ -1,5 +1,7 @@
 {
   "pages": [
+    "pages/animate/animate",
+    "pages/picker/picker",
     "pages/note/note",
     "pages/index/index",
     "pages/index/detail/detail",
@@ -23,6 +25,12 @@
     },{
       "pagePath": "pages/note/note",
       "text": "记事本",
+      "iconPath": "",
+      "selectedIconPath": ""
+    },
+    {
+      "pagePath": "pages/picker/picker",
+      "text": "选择器",
       "iconPath": "",
       "selectedIconPath": ""
     }]
