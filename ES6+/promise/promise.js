@@ -2,7 +2,7 @@
 // Promise 是一个类，通过 new 调用，传入一个回调函数，表示执行的任务
 // 这个回调函数接受两个参数，resolve、reject，分别是成功和失败的回调
 let Promise = require('./promiseA+');
-let p = new Promise(function (resolve, reject) {
+let p = new Promise(function(resolve, reject) {
   setTimeout(() => {
     let num = Math.random();
     if (num > 0.5) {
@@ -26,9 +26,18 @@ let p = new Promise(function (resolve, reject) {
 */
 
 /* then 方法，具有两个参数，onFulfilled、onRejected，分别是成功和失败的回调 */
-p.then(function (value) {
+p.then(
+  function(value) {
     console.log(value);
-  }, function (reason) {
+  },
+  function(reason) {
     console.log(reason);
-  });
-
+  }
+).then(
+  function(value) {
+    console.log(value);
+  },
+  function(reason) {
+    console.log(reason);
+  }
+);
