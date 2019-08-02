@@ -1,7 +1,7 @@
 /* Promise 基本用法 是异步任务的一个解决方案*/
 // Promise 是一个类，通过 new 调用，传入一个回调函数，表示执行的任务
 // 这个回调函数接受两个参数，resolve、reject，分别是成功和失败的回调
-let Promise = require('./promiseA+');
+let Promise = require('./2. promiseA+');
 let p = new Promise(function(resolve, reject) {
   setTimeout(() => {
     let num = Math.random();
