@@ -35,6 +35,7 @@ function* read() {
 
 /* co 就是方便 promise 和 generator 结合使用的库，由 koa 的作者 tj 实现 */
 let co = require('./6. co.js');
-co(read).then(function(data) {
+let p = co(read); // read 就会自己执行，返回一个 promise
+p.then(function(data) {
   console.log(data); // 获取到最后 read 返回的值
 });
