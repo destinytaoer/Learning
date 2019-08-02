@@ -168,7 +168,47 @@ function resolvePromise(promise, x, resolve, reject) {
 Promise.prototype.catch = function(onRejected) {
   this.then(null, onRejected);
 };
+function gen(times, cb) {
+  let result = [];
+  let count = 0;
+  return function(data, index) {
+    result[index] = data;
+    if (++count === times) {
+      cb && cb(result);
+    }
+  };
+}
+Promise.all = function(promises) {
+  return new Promise(function(resolve, reject) {
+    let done = gen(promises.length, resolve);
+    for (let i = 0; i < promises.length; i++) {
+      promises[i].then(function(data) {
+        done(data, i);
+      }, reject);
+    }
+  });
+};
+Promise.race = function(promises) {
+  return new Promise(function(resolve, reject) {
+    for (let i = 0; i < promises.length; i++) {
+      promises[i].then(resolve, reject);
+    }
+  });
+};
+// 返回一个立即成功的 promise
+Promise.resolve = function(value) {
+  return new Promise(function(resolve, reject) {
+    resolve(value);
+  });
+};
+// 返回一个立即失败的 promise
+Promise.reject = function(reason) {
+  return new Promise(function(resolve, reject) {
+    reject(reason);
+  });
+};
 
+/* 用于 promises-aplus-tests 的单元测试 */
 Promise.deferred = Promise.defer = function() {
   let df = {};
   df.promise = new Promise(function(resolve, reject) {

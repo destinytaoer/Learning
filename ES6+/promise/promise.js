@@ -41,3 +41,45 @@ p.then(
     console.log(reason);
   }
 );
+
+/* Promise.all 方法，接受一个 promise 数组，如果 promise 全部成功，这个 promise 才会成功，如果有一个失败，这个 promise 就会失败 */
+let p1 = new Promise(function(resolve, reject) {
+  setTimeout(() => {
+    resolve();
+  }, 1000);
+});
+let p2 = new Promise(function(resolve, reject) {
+  setTimeout(() => {
+    resolve('p2');
+  }, 2000);
+});
+// 同时异步请求多个数据的时候，会用 all
+console.time('all');
+Promise.all([p1, p2]).then(
+  function(data) {
+    console.log('两秒后成功：', data); // 此时的返回结果是请求成功所有结果的数组
+    console.timeEnd('all');
+  },
+  function(err) {
+    console.log('失败：', err);
+    console.timeEnd('all');
+  }
+);
+
+/* Promise.race 方法，接受一个 promise 数组，如果有一个 promise 成功，那么这个 promise 就成功，有一个失败，就失败了 */
+// 当有三个接口都不稳定时，你可以同时取三个接口，哪个先成功就用哪个
+console.time('race');
+Promise.race([p1, p2]).then(
+  function(data) {
+    console.log('一秒后成功：', data); // 此时的返回结果是成功的那个 promise 返回的结果
+    console.timeEnd('race');
+  },
+  function(err) {
+    console.log('失败：', err);
+    console.timeEnd('race');
+  }
+);
+
+/* Promise.resolve 方法 */
+
+/* Promise.reject 方法 */
