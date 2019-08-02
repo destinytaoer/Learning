@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>generator + promise</title>
+    <style>
+      .ball {
+        width: 100px;
+        height: 100px;
+        background: lightblue;
+        border-radius: 50%;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="ball"></div>
+    <div class="ball"></div>
+    <div class="ball"></div>
+    <script>
+      let balls = document.getElementsByClassName('ball');
+      let ball1 = balls[0];
+      let ball2 = balls[1];
+      let ball3 = balls[2];
+      function move(ball, target) {
+        return new Promise(function(resolve, reject) {
+          let index = 0;
+          let timer = setInterval(() => {
+            if (index++ < target) {
+              ball.style.transform = `translateX(${index}px)`;
+            } else {
+              clearInterval(timer);
+              resolve();
+            }
+          });
+        });
+      }
+
+      function* go() {
+        yield move(ball1, 100);
+        yield move(ball2, 100);
+        yield move(ball3, 100);
+        alert('over');
+      }
+      function co(gen) {
+        return new Promise(function(resolve, reject) {
+          let it = gen();
+          !(function next(lastVal) {
+            let { value, done } = it.next(lastVal);
+            if (done) {
+              resolve(value);
+            } else {
+              value.then(function(data) {
+                next(data);
+              });
+            }
+          })();
+        });
+      }
+      co(go);
+    </script>
+  </body>
+</html>
