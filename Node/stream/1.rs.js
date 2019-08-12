@@ -6,6 +6,7 @@ const fs = require('fs');
 let rs = fs.createReadStream('./1.txt', {
   flags: 'r', // 表明要对文件进行何种操作的标志位
   mode: 0o666, // 权限位
+  autoClose: true, // 是否自动关闭
   start: 2, // 开始读取位置，索引从 0 算起
   end: 8, // 结束读取位置，包含索引 8
   highWaterMark: 3 // 缓存区大小，单位字节
