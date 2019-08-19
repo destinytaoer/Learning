@@ -92,6 +92,33 @@ class WriteStream extends EventEmitter {
       cb && cb();
     });
   }
+  end(chunk, encoding, cb) {
+    if (typeof chunk === 'function') {
+      cb = chunk;
+      chunk = null;
+    } else if (typeof encoding === 'function') {
+      cb = encoding;
+      encoding = 'utf8';
+    }
+    if (chunk) {
+      this.write(chunk, encoding, () => {
+        this._end(cb);
+      });
+    } else {
+      if (this.writing) {
+        this.on('drain', () => {
+          this._end(cb);
+        });
+      } else {
+        this._end(cb);
+      }
+    }
+  }
+  _end(cb) {
+    cb();
+    this.emit('finish');
+    this.destory();
+  }
   destory() {
     fs.close(this.fd, () => {
       this.emit('close');
