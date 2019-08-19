@@ -56,31 +56,30 @@ class ReadStream extends EventEmitter {
     }
   }
   read(n) {
-    n = n == null ? this.length : n;
-    if (0 < n < this.length) {
-      let ret = Buffer.alloc(n);
-      let index = 0;
-      let b;
-      // 每次取出缓存区链表的第一个节点
-      while (index !== n && null != (b = this.buffers.shift())) {
-        for (let i = 0; i < b.length; i++) {
-          // 遍历，一个个放入结果中
-          ret[index++] = b[i];
-          this.length--;
-          // 如果已经到达了 n，就退出
-          if (index === n) {
-            // 如果 b 还有剩余，就放回缓存区中
-            b = b.slice(i);
-            b.length && this.buffers.unshift(b);
-            break;
-          }
+    n = n == null ? this.length : n > this.length ? this.length : n;
+    if (n < 0) return null;
+    let ret = Buffer.alloc(n);
+    let index = 0;
+    let b;
+    // 每次取出缓存区链表的第一个节点
+    while (index !== n && null != (b = this.buffers.shift())) {
+      for (let i = 0; i < b.length; i++) {
+        // 遍历，一个个放入结果中
+        ret[index++] = b[i];
+        this.length--;
+        // 如果已经到达了 n，就退出
+        if (index === n) {
+          // 如果 b 还有剩余，就放回缓存区中
+          b = b.slice(i);
+          b.length && this.buffers.unshift(b);
+          break;
         }
       }
-      if (this.length < this.highWaterMark) {
-        this._read();
-      }
-      return this.encoding ? ret.toString(this.encoding) : ret;
     }
+    if (this.length < this.highWaterMark) {
+      this._read();
+    }
+    return this.encoding ? ret.toString(this.encoding) : ret;
   }
   _read() {
     if (typeof this.fd !== 'number') {
@@ -137,6 +136,9 @@ class ReadStream extends EventEmitter {
     });
     ws.on('drain', () => {
       this.resume();
+    });
+    this.on('end', function() {
+      ws.end();
     });
   }
   // 暂停，进入暂停模式
