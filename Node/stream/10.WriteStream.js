@@ -30,7 +30,7 @@ class WriteStream extends EventEmitter {
         this.fd = fd;
         if (err) {
           this.autoClose && this.destory();
-          this.emit('err', err);
+          return this.emit('err', err);
         }
         this.emit('open');
       });
@@ -85,7 +85,7 @@ class WriteStream extends EventEmitter {
     fs.write(this.fd, chunk, 0, chunk.length, this.pos, (err, bytesWritten) => {
       if (err) {
         this.autoClose && this.destory();
-        this.emit('err', err);
+        return this.emit('err', err);
       }
       this.pos += bytesWritten;
       this.length -= bytesWritten;
