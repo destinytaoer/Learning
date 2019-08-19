@@ -24,3 +24,11 @@ for (var i = 1; i <= 5; i++) {
 w.end(function() {
   console.log(stock);
 });
+// 简易写法
+let arr = [];
+let ws2 = Writable({
+  write(chunk, encoding, callback) {
+    arr.push(chunk);
+    callback(); // 必须调用 callback，才能进入下一次写入
+  }
+});
