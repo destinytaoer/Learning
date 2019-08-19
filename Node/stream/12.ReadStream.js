@@ -28,9 +28,11 @@ class ReadStream extends EventEmitter {
     // 当给实例添加了任意的监听函数时，会触发这个事件
     this.on('newListener', (type, listener) => {
       if (type === 'data') {
-        // 监听了 data 之后，会变成流动模式，然后开始读文件
-        this.flowing = true;
-        this._read();
+        // 监听了 data 之后，如果 flowing 还是初始值，就会变成流动模式，然后开始读文件
+        if (this.flowing === null) {
+          this.flowing = true;
+          this._read();
+        }
       }
     });
   }
@@ -69,8 +71,8 @@ class ReadStream extends EventEmitter {
           // 当前位置已经超过指定的 end 位置了，就结束
           this.endFn();
         } else {
-          // 否则继续读
-          this._read();
+          // 否则是流动模式时就继续读
+          if (this.flowing) this._read();
         }
       } else {
         // 没有读取到字节说明已经结束
@@ -86,6 +88,26 @@ class ReadStream extends EventEmitter {
     fs.close(this.fd, () => {
       this.emit('close');
     });
+  }
+  pipe(ws) {
+    this.on('data', data => {
+      let flag = ws.write(data);
+      if (!flag) {
+        this.pause();
+      }
+    });
+    ws.on('drain', () => {
+      this.resume();
+    });
+  }
+  // 暂停，进入暂停模式
+  pause() {
+    this.flowing = false;
+  }
+  // 恢复，进入流动模式，并继续读取
+  resume() {
+    this.flowing = true;
+    this._read();
   }
 }
 
