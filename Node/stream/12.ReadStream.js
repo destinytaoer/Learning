@@ -22,7 +22,10 @@ class ReadStream extends EventEmitter {
     this.flowing = null; // 模式的标记，true 为流动模式，false 为暂停模式
 
     this.length = 0; // 缓存区数据的长度，字节数
-    this.buffer = Buffer.alloc(this.highWaterMark); // 并不是缓存区，只是每次获取的固定 Buffer 数
+    this.buffer = Buffer.alloc(this.highWaterMark); // 并不是缓存区，只是每次读取的固定 Buffer 数
+
+    this.buffers = []; // 这才是真正的缓存区
+    this.length = 0;
 
     this.open(); // 创建流时，立即打开文件
     // 当给实例添加了任意的监听函数时，会触发这个事件
@@ -33,6 +36,10 @@ class ReadStream extends EventEmitter {
           this.flowing = true;
           this._read();
         }
+      }
+      if (type === 'readable') {
+        this.flowing = false;
+        this._read();
       }
     });
   }
@@ -46,6 +53,33 @@ class ReadStream extends EventEmitter {
         }
         this.emit('open');
       });
+    }
+  }
+  read(n) {
+    n = n == null ? this.length : n;
+    if (0 < n < this.length) {
+      let ret = Buffer.alloc(n);
+      let index = 0;
+      let b;
+      // 每次取出缓存区链表的第一个节点
+      while (index !== n && null != (b = this.buffers.shift())) {
+        for (let i = 0; i < b.length; i++) {
+          // 遍历，一个个放入结果中
+          ret[index++] = b[i];
+          this.length--;
+          // 如果已经到达了 n，就退出
+          if (index === n) {
+            // 如果 b 还有剩余，就放回缓存区中
+            b = b.slice(i);
+            b.length && this.buffers.unshift(b);
+            break;
+          }
+        }
+      }
+      if (this.length < this.highWaterMark) {
+        this._read();
+      }
+      return this.encoding ? ret.toString(this.encoding) : ret;
     }
   }
   _read() {
@@ -65,6 +99,11 @@ class ReadStream extends EventEmitter {
         // 截取获取到的 buffer
         let data = this.buffer.slice(0, bytes);
         this.pos += bytes; // 移动位置
+        if (!this.flowing) {
+          this.buffers.push(data);
+          this.length += bytes;
+          this.emit('readable');
+        }
         data = this.encoding ? data.toString(this.encoding) : data;
         this.emit('data', data);
         if (this.end && this.pos > this.end) {
