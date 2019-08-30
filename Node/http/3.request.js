@@ -5,7 +5,7 @@ let server = http.createServer();
 server.on('request', function(req, res) {
   console.log(req.method); // 请求方法
   console.log(req.url); // 获取请求路径
-  console.log(req.protocol); // 获取协议
+  console.log(req.httpVersion); // 获取协议版本
   console.log(req.headers); // 获取请求头
 
   // 通过流的方式来获取请求体
