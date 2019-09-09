@@ -18,13 +18,13 @@ let chalk = require('chalk');
 let handlebars = require('handlebars'); // 模板引擎
 // 编译模板，得到一个渲染方法，然后传入实际数据就可以得到渲染后的 HTML
 function list() {
-  let temp = fs.readFileSync(
+  let tmpl = fs.readFileSync(
     path.resolve(__dirname, 'template', 'list.html'),
     'utf8'
   );
-  return handlebars.compile(temp);
+  return handlebars.compile(tmpl);
 }
-
+// 需要设置环境变量才能打印出 log
 process.env.DEBUG = 'static:*';
 let debug = require('debug')('static:app');
 class Server {
@@ -50,6 +50,8 @@ class Server {
     let filepath = path.join(this.config.root, pathname);
     try {
       // 获取到文件的详情
+      // TODO: 对文件名中的特殊字符需要进行处理
+      filepath = filepath.replace('%20', ' ');
       let statObj = await stat(filepath);
       if (statObj.isDirectory()) {
         let files = await readdir(filepath);
