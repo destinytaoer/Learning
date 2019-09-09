@@ -8,7 +8,7 @@
 server -d 指定静态文件根目录 -p 指定端口号 -o 指定监听的主机
 ```
 
-### chalk 插件
+### chalk 模块
 
 chalk(粉笔)模块，使得命令行打印出来有颜色的输出，使用：
 
@@ -16,7 +16,7 @@ chalk(粉笔)模块，使得命令行打印出来有颜色的输出，使用：
 let chalk = require('chalk');console.log(chalk.green('hello world'))
 ```
 
-### debug 插件
+### debug 模块
 
 控制 console.log 是否进行输出，用于代替 console.log 使用。
 
@@ -65,3 +65,59 @@ process.env.DEBUG = 'static:*';
 ```bash
 supervisor xxx.js
 ```
+
+### yargs 模块
+
+拓展命令行工具。
+
+在 bin 目录下，编写一个 www 文件，名字是自定义的，不是固定的，并且文件不带任何后缀名
+```js
+// 前面的这一串是为了兼容 mac
+#! /usr/bin/env node
+
+let yargs = require('yargs')
+let Server = require('../src/app.js')
+// yargs 配置命令行，获取到参数
+let argv = yargs.option('d', {
+  alias: 'root',
+  demand: 'false',
+  type: 'string',
+  default: process.cwd(),
+  description: '静态文件根目录'
+}).option('o', {
+  alias: 'host',
+  demand: 'false',
+  type: 'string',
+  default: 'localhost',
+  description: '配置监听的主机'
+}).option('p', {
+  alias: 'port',
+  demand: 'false',
+  type: 'number',
+  default: '8080',
+  description: '配置监听的端口号'
+})
+.usage('server [options]')
+.example('server -d / -p 9090 -o localhost', '在本地的 9090 端口上监听客户端的请求')
+.help('h').argv;
+
+// 根据参数启动静态服务器
+let server = new Server(argv);
+server.start(); // 启动服务
+```
+
+在 package.json 中添加命令：
+
+```json
+{
+  //...
+  "bin": {
+    "server": "bin/www"
+  },
+  //...
+}
+```
+
+在命令行中执行 server 就会执行 bin/www 文件
+
+然后测试，使用 npm link，会在 bin 文件放到本地的全局 npm 中，就可以在任意文件夹使用 server 命令开启静态服务器
