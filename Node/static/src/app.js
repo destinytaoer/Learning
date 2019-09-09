@@ -4,6 +4,7 @@ let http = require('http');
 let fs = require('fs');
 let path = require('path');
 let zlib = require('zlib');
+let crypto = require('crypto');
 let mime = require('mime');
 let url = require('url');
 let { promisify, inspect } = require('util');
@@ -46,7 +47,7 @@ class Server {
     // 先取到客户端想要的文件或文件路径
     let { pathname } = url.parse(req.url);
     if (pathname == '/favicon.ico') {
-      return this.sendError(req, res);
+      return this.sendError(req, res, 404);
     }
     let filepath = path.join(this.config.root, pathname);
     try {
@@ -69,7 +70,9 @@ class Server {
         res.end(html);
       } else {
         // 如果是文件，那么就直接发送该文件
-        this.sendFile(req, res, filepath, statObj);
+        // this.sendFile(req, res, filepath, statObj);
+        // 走缓存
+        this.handleCache(req, res, filepath, statObj);
       }
     } catch (e) {
       // inspect 把一个对象转换成字符串
@@ -79,9 +82,9 @@ class Server {
   }
   sendFile(req, res, filepath, statObj) {
     // 设置文件类型，然后将文件流传给 res
-    res.setHeader('Content-Type', mime.getType(filepath));
+    res.setHeader('Content-Type', mime.getType(filepath) + ';charset=utf8');
     // 实现压缩
-    let encoding = getEncoding(req, res);
+    let encoding = this.getEncoding(req, res);
     if (encoding) {
       fs.createReadStream(filepath)
         .pipe(encoding)
@@ -90,16 +93,41 @@ class Server {
       fs.createReadStream(filepath).pipe(res);
     }
   }
-  sendError(req, res) {
-    res.statusCode = 500;
+  sendError(req, res, statusCode) {
+    res.statusCode = statusCode || 500;
     res.end(`There is somethiing wrong in the server! Please try later`);
+  }
+  handleCache(req, res, filepath, statObj) {
+    // 强制缓存 30s
+    res.setHeader('Cache-Control', 'private, max-age=30');
+    res.setHeader('Expires', new Date(Date.now() + 30 * 1000).toGMTString());
+
+    // 对比缓存，使用 etag
+    let ifNoneMatch = req.headers['is-none-match'];
+    let out = fs.createReadStream(filepath);
+    let sha = crypto.createHash('sha1');
+    out.on('data', function(data) {
+      sha.update(data);
+    });
+    out.on('end', () => {
+      let etag = sha.digest('hex');
+      if (ifNoneMatch === etag) {
+        res.writeHead(304);
+        res.end('');
+      } else {
+        res.setHeader('Etag', etag);
+        this.sendFile(req, res, filepath, statObj);
+      }
+    });
   }
   getEncoding(req, res) {
     // Accept-Encoding: gzip, deflate
     let acceptEncoding = req.headers['accept-encoding'];
     if (/\bgzip\b/.test(acceptEncoding)) {
+      res.setHeader('Content-Encoding', 'gzip');
       return zlib.createGzip();
     } else if (/\bdeflate\b/.test(acceptEncoding)) {
+      res.setHeader('Content-Encoding', 'deflate');
       return zlib.createDeflate();
     } else {
       return null;
