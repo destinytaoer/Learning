@@ -4,7 +4,7 @@ let debug = require('debug')('static:config');
 let config = {
   host: 'localhost',
   port: '8080',
-  root: path.resolve(__dirname, '..', 'public')
+  root: process.cwd()
 };
 debug(config);
 module.exports = config;
