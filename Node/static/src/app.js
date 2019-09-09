@@ -3,6 +3,7 @@ let config = require('./config');
 let http = require('http');
 let fs = require('fs');
 let path = require('path');
+let zlib = require('zlib');
 let mime = require('mime');
 let url = require('url');
 let { promisify, inspect } = require('util');
@@ -79,11 +80,30 @@ class Server {
   sendFile(req, res, filepath, statObj) {
     // 设置文件类型，然后将文件流传给 res
     res.setHeader('Content-Type', mime.getType(filepath));
-    fs.createReadStream(filepath).pipe(res);
+    // 实现压缩
+    let encoding = getEncoding(req, res);
+    if (encoding) {
+      fs.createReadStream(filepath)
+        .pipe(encoding)
+        .pipe(res);
+    } else {
+      fs.createReadStream(filepath).pipe(res);
+    }
   }
   sendError(req, res) {
     res.statusCode = 500;
     res.end(`There is somethiing wrong in the server! Please try later`);
+  }
+  getEncoding(req, res) {
+    // Accept-Encoding: gzip, deflate
+    let acceptEncoding = req.headers['accept-encoding'];
+    if (/\bgzip\b/.test(acceptEncoding)) {
+      return zlib.createGzip();
+    } else if (/\bdeflate\b/.test(acceptEncoding)) {
+      return zlib.createDeflate();
+    } else {
+      return null;
+    }
   }
 }
 
