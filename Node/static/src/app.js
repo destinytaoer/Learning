@@ -83,14 +83,16 @@ class Server {
   sendFile(req, res, filepath, statObj) {
     // 设置文件类型，然后将文件流传给 res
     res.setHeader('Content-Type', mime.getType(filepath) + ';charset=utf8');
+    // 范围请求，获取到范围
+    let { start, end } = this.getRange(req, res, filepath, statObj);
+    // 文件只获取到范围字节
+    let rs = fs.createReadStream(filepath, { start, end });
     // 实现压缩
     let encoding = this.getEncoding(req, res);
     if (encoding) {
-      fs.createReadStream(filepath)
-        .pipe(encoding)
-        .pipe(res);
+      rs.pipe(encoding).pipe(res);
     } else {
-      fs.createReadStream(filepath).pipe(res);
+      rs.pipe(res);
     }
   }
   sendError(req, res, statusCode) {
@@ -132,6 +134,21 @@ class Server {
     } else {
       return null;
     }
+  }
+  getRange(req, res, filepath, statObj) {
+    // 告诉客户端自身支持 range
+    res.setHeader('Accept-Ranges', 'bytes');
+    let range = req.headers['range'];
+    let start = 0;
+    let end = statObj.size;
+    if (range) {
+      // bytes=0-xxx
+      let [, s, e] = range.match(/bytes=(\d*)-(\d*)/);
+      start = s ? parseInt(s) : start;
+      end = e ? parseInt(e) : end;
+      res.setHeader('Content-Range', `bytes ${start}-${end}/${statObj.size}`);
+    }
+    return { start, end: end - 1 };
   }
 }
 
