@@ -15,6 +15,7 @@
     "express": "^4.16.4",
     "http-proxy": "^1.17.0",
     "mime": "^2.4.4",
+    "user-agent-parse": "^0.1.8",
     "yargs": "^14.0.0"
   }
 }
