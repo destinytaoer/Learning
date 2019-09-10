@@ -146,6 +146,7 @@ class Server {
       let [, s, e] = range.match(/bytes=(\d*)-(\d*)/);
       start = s ? parseInt(s) : start;
       end = e ? parseInt(e) : end;
+      res.statusCode = 206;
       res.setHeader('Content-Range', `bytes ${start}-${end}/${statObj.size}`);
     }
     return { start, end: end - 1 };
