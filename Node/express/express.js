@@ -8,29 +8,53 @@ function createApplication() {
     let method = req.method;
     let { pathname } = url.parse(req.url, true);
     let index = 0;
-    ~(function next() {
+    ~(function next(err) {
       if (index >= app.routes.length) {
         return res.end(`Cannot ${method} ${pathname}`);
       }
       let route = app.routes[index++];
-      if (route.method === 'middle') {
-        // 只要请求路径是以中间件路径开头即可，加 / 为了使 /user 不能匹配 /users
-        if (
-          route.name === '/' ||
-          pathname.startsWith(route.path + '/') ||
-          pathname === route.name
-        ) {
-          route.handler(req, res, next);
+      if (err) {
+        // 个人感觉可以直接将 method 设置为 errMiddle，需要在 use 方法中进行处理
+        // 先判断是否是中间件
+        if (route.method === 'middle') {
+          // 再判断路径是否匹配
+          if (
+            route.path === '/' ||
+            pathname.startsWith(route.path + '/') ||
+            pathname === route.name
+          ) {
+            // 再看参数数量是否是 4 个
+            if (route.handler.length === 4) {
+              route.handler(err, req, res, next);
+            } else {
+              next(err);
+            }
+          } else {
+            next(err);
+          }
         } else {
-          next();
+          next(err);
         }
       } else {
-        // 路由
-        if (
-          (route.method === method.toLowerCase() || route.method === 'all') &&
-          (route.path === pathname || route.path === '*')
-        ) {
-          return route.handler(req, res);
+        if (route.method === 'middle') {
+          // 只要请求路径是以中间件路径开头即可，加 / 为了使 /user 不能匹配 /users
+          if (
+            route.path === '/' ||
+            pathname.startsWith(route.path + '/') ||
+            pathname === route.name
+          ) {
+            route.handler(req, res, next);
+          } else {
+            next();
+          }
+        } else {
+          // 路由
+          if (
+            (route.method === method.toLowerCase() || route.method === 'all') &&
+            (route.path === pathname || route.path === '*')
+          ) {
+            return route.handler(req, res);
+          }
         }
       }
     })();

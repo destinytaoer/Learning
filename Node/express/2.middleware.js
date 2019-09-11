@@ -5,7 +5,7 @@ const app = express();
 // 省略路径时，就是 / 匹配所有路径
 app.use(function(req, res, next) {
   console.log('没有路径的中间件');
-  next();
+  next('err');
 });
 
 app.use('/water', function(req, res, next) {
@@ -13,9 +13,17 @@ app.use('/water', function(req, res, next) {
   next();
 });
 
+// 错误处理中间件
+app.use(function(err, req, res, next) {
+  // res.end(err);
+  console.log(err);
+  next();
+});
+
 app.get('/water', function(req, res) {
   res.end('water');
 });
+
 app.listen(8080, function() {
   console.log('server started at 8080');
 });
