@@ -7,16 +7,33 @@ function createApplication() {
     // 遍历路由规则进行匹配，成功就执行回调
     let method = req.method;
     let { pathname } = url.parse(req.url, true);
-    for (let i = 0; i < app.routes.length; i++) {
-      let route = app.routes[i];
-      if (
-        (route.method === method.toLowerCase() || route.method === 'all') &&
-        (route.path === pathname || route.path === '*')
-      ) {
-        return route.handler(req, res);
+    let index = 0;
+    ~(function next() {
+      if (index >= app.routes.length) {
+        return res.end(`Cannot ${method} ${pathname}`);
       }
-    }
-    res.end(`Cannot ${method} ${pathname}`);
+      let route = app.routes[index++];
+      if (route.method === 'middle') {
+        // 只要请求路径是以中间件路径开头即可，加 / 为了使 /user 不能匹配 /users
+        if (
+          route.name === '/' ||
+          pathname.startsWith(route.path + '/') ||
+          pathname === route.name
+        ) {
+          route.handler(req, res, next);
+        } else {
+          next();
+        }
+      } else {
+        // 路由
+        if (
+          (route.method === method.toLowerCase() || route.method === 'all') &&
+          (route.path === pathname || route.path === '*')
+        ) {
+          return route.handler(req, res);
+        }
+      }
+    })();
   };
   app.listen = function() {
     let server = http.createServer(app);
@@ -39,6 +56,18 @@ function createApplication() {
   app.all = function(path, handler) {
     app.routes.push({
       method: 'all',
+      path,
+      handler
+    });
+  };
+
+  app.use = function(path, handler) {
+    if (typeof path === 'function') {
+      handler = path;
+      path = '/';
+    }
+    app.routes.push({
+      method: 'middle',
       path,
       handler
     });
