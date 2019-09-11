@@ -8,6 +8,9 @@ app.listen(8080);
 app.get('/hello', function(req, res) {
   res.end('hello');
 });
-app.get('/world', function(req, res) {
+app.post('/world', function(req, res) {
   res.end('world');
+});
+app.all('*', function(req, res) {
+  res.end('404');
 });

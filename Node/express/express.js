@@ -3,11 +3,16 @@ const url = require('url');
 function createApplication() {
   // app 其实就是真正的请求监听函数
   let app = function(req, res) {
+    // 这里还会进行 req/res 的增强
+    // 遍历路由规则进行匹配，成功就执行回调
     let method = req.method;
     let { pathname } = url.parse(req.url, true);
     for (let i = 0; i < app.routes.length; i++) {
       let route = app.routes[i];
-      if (route.method === method.toLowerCase() && route.path === pathname) {
+      if (
+        (route.method === method.toLowerCase() || route.method === 'all') &&
+        (route.path === pathname || route.path === '*')
+      ) {
         return route.handler(req, res);
       }
     }
@@ -30,6 +35,14 @@ function createApplication() {
       });
     };
   });
+  // all 方法
+  app.all = function(path, handler) {
+    app.routes.push({
+      method: 'all',
+      path,
+      handler
+    });
+  };
 
   return app;
 }
