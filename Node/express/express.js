@@ -60,7 +60,19 @@ function createApplication() {
                 params[key] = value;
               }
               req.params = params;
-              route.handler(req, res);
+              route.paramsNames.forEach(param => {
+                let handler = app.paramHandlers[param];
+                if (handler) {
+                  handler(
+                    req,
+                    res,
+                    () => {
+                      route.handler(req, res);
+                    },
+                    params[param]
+                  );
+                }
+              });
             } else {
               next();
             }
@@ -100,7 +112,7 @@ function createApplication() {
           paramsNames.push(arguments[1]);
           return '([^/]+)';
         });
-        layer.reg_path = new RegExp(path);
+        layer.reg_path = new RegExp('^' + path + '$');
         layer.paramsNames = paramsNames;
       }
       // 添加路由对象
@@ -114,6 +126,11 @@ function createApplication() {
       path,
       handler
     });
+  };
+
+  app.paramHandlers = {};
+  app.param = function(param, handler) {
+    app.paramHandlers[param] = handler;
   };
 
   app.use = function(path, handler) {
