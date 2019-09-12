@@ -97,6 +97,14 @@ function createApplication() {
     });
   };
 
+  // 内置中间件，为 req 和 res 添加方法和属性
+  app.use(function(req, res, next) {
+    let urlObj = url.parse(req.url, true);
+    req.query = urlObj.query;
+    req.path = urlObj.pathname;
+    req.hostname = req.headers['host'].split(':')[0];
+    next();
+  });
   return app;
 }
 module.exports = createApplication;
