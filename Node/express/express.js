@@ -49,11 +49,29 @@ function createApplication() {
           }
         } else {
           // 路由
-          if (
-            (route.method === method.toLowerCase() || route.method === 'all') &&
-            (route.path === pathname || route.path === '*')
-          ) {
-            return route.handler(req, res);
+          if (route.paramsNames) {
+            let matcheres = pathname.match(route.reg_path);
+            // [匹配值，'捕获值', '捕获值',...]
+            if (matcheres) {
+              let params = {};
+              for (let i = 0; i < route.paramsNames.length; i++) {
+                let key = route.paramsNames[i];
+                let value = matcheres[i + 1];
+                params[key] = value;
+              }
+              req.params = params;
+              route.handler(req, res);
+            } else {
+              next();
+            }
+          } else {
+            if (
+              (route.method === method.toLowerCase() ||
+                route.method === 'all') &&
+              (route.path === pathname || route.path === '*')
+            ) {
+              route.handler(req, res);
+            }
           }
         }
       }
@@ -68,12 +86,25 @@ function createApplication() {
   http.METHODS.forEach(function(method) {
     method = method.toLowerCase();
     app[method] = function(path, handler) {
-      // 添加路由对象
-      app.routes.push({
+      const layer = {
         method,
         path,
         handler
-      });
+      };
+      if (path.includes(':')) {
+        let paramsNames = [];
+        // 1.把原本路径转换为正则表达式
+        // 2.提取变量名
+        path = path.replace(/:([^\/]+)/g, function() {
+          // 第一个是匹配 :name, 第二个是捕获 name
+          paramsNames.push(arguments[1]);
+          return '([^/]+)';
+        });
+        layer.reg_path = new RegExp(path);
+        layer.paramsNames = paramsNames;
+      }
+      // 添加路由对象
+      app.routes.push(layer);
     };
   });
   // all 方法
