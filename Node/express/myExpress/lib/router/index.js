@@ -13,6 +13,8 @@
  */
 const Route = require('./route');
 const Layer = require('./layer');
+const url = require('url');
+const slice = Array.prototype.slice;
 
 function Router() {
   function router(req, res, next) {
@@ -34,9 +36,32 @@ proto.route = function(path) {
   this.stack.push(layer);
   return route;
 };
-proto.get = function(path, handler) {
+proto.get = function() {
+  let args = slice.apply(arguments);
+  let path = args.shift();
+  let handlers = args;
   let route = this.route(path);
-  route.get(handler);
+  route.get(handlers);
 };
-proto.handle = function(req, res, out) {};
+proto.handle = function(req, res, out) {
+  let idx = 0;
+  let self = this;
+  let { pathname } = url.parse(req.url, true);
+  ~(function next() {
+    if (idx >= self.stack.length) {
+      return out(); //都已经匹配完，调用 out，即 application 的 done 函数
+    }
+    // next 方法，进入下一层
+    let layer = self.stack[idx++];
+    if (
+      layer.match(pathname) && // 路径匹配
+      layer.route && // 具有处理路由
+      layer.route.handle_method(req.method) // 路由中具有这个方法的处理函数
+    ) {
+      layer.handle_request(req, res, next);
+    } else {
+      next(); // 匹配下一层
+    }
+  })();
+};
 module.exports = Router;

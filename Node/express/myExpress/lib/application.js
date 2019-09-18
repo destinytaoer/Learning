@@ -15,6 +15,7 @@ Application.prototype.get = function() {
   // 使用到时，才进行初始化
   this.lazyrouter();
   this._router.get.apply(this._router, slice.call(arguments));
+  return this;
 };
 
 Application.prototype.listen = function() {

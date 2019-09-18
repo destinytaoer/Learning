@@ -1,4 +1,4 @@
-const express = require('express');
+const express = require('../lib/express');
 const app = express();
 
 // next 表示执行下一个
