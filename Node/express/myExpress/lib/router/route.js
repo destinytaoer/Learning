@@ -28,7 +28,11 @@ Route.prototype.dispatch = function(req, res, out) {
   let idx = 0;
   let self = this;
 
-  ~(function next() {
+  ~(function next(err) {
+    if (err) {
+      // 一旦路由出错，则调用 out，即 外层 layer 的 next 函数，往下一层匹配
+      return out(err);
+    }
     if (idx >= self.stack.length) {
       return out(); // Route 内的 layer 层都已经匹配完，调用 out，即 外层 layer 的 next 函数，往下一层匹配
     }

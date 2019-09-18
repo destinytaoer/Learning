@@ -24,7 +24,12 @@ methods.forEach(function(method) {
 Application.prototype.listen = function() {
   let self = this;
   let server = http.createServer(function(req, res) {
-    function done() {
+    function done(err) {
+      if (err) {
+        res.writeHead(500);
+        console.log(err);
+        res.end(err.toString());
+      }
       //如果没有任何路由规则匹配的话会走 done
       res.end(`Cannot ${req.method} ${req.url}`);
     }

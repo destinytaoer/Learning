@@ -53,9 +53,9 @@ proto.handle = function(req, res, out) {
   let idx = 0;
   let self = this;
   let { pathname } = url.parse(req.url, true);
-  ~(function next() {
+  ~(function next(err) {
     if (idx >= self.stack.length) {
-      return out(); //都已经匹配完，调用 out，即 application 的 done 函数
+      return out(err); //都已经匹配完，调用 out，即 application 的 done 函数
     }
     // next 方法，进入下一层
     let layer = self.stack[idx++];
@@ -64,7 +64,11 @@ proto.handle = function(req, res, out) {
       layer.route && // 具有处理路由
       layer.route.handle_method(req.method) // 路由中具有这个方法的处理函数
     ) {
-      layer.handle_request(req, res, next);
+      if (err) {
+        layer.handle_error(err, req, res, next);
+      } else {
+        layer.handle_request(req, res, next);
+      }
     } else {
       next(); // 匹配下一层
     }
