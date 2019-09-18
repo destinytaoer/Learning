@@ -15,6 +15,7 @@ const Route = require('./route');
 const Layer = require('./layer');
 const url = require('url');
 const slice = Array.prototype.slice;
+const methods = require('methods');
 
 function Router() {
   function router(req, res, next) {
@@ -36,13 +37,18 @@ proto.route = function(path) {
   this.stack.push(layer);
   return route;
 };
-proto.get = function() {
-  let args = slice.apply(arguments);
-  let path = args.shift();
-  let handlers = args;
-  let route = this.route(path);
-  route.get(handlers);
-};
+
+methods.forEach(function(method) {
+  proto[method] = function() {
+    let args = slice.apply(arguments);
+    let path = args.shift();
+    let handlers = args;
+    let route = this.route(path);
+    route[method](handlers);
+    return this;
+  };
+});
+
 proto.handle = function(req, res, out) {
   let idx = 0;
   let self = this;

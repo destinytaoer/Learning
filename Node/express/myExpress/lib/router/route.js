@@ -1,4 +1,5 @@
 const Layer = require('./layer');
+const methods = require('methods');
 function Route(path) {
   this.path = path;
   this.stack = [];
@@ -11,15 +12,17 @@ Route.prototype.handle_method = function(method) {
   return this.methods[method];
 };
 
-Route.prototype.get = function(handlers) {
-  this.methods.get = true;
-  for (let i = 0; i < handlers.length; i++) {
-    let layer = new Layer('/', handlers[i]); // 路径为 / 表示都匹配，以外层的 layer 为准，实际上 path 没有被使用
-    layer.method = 'get';
-    this.stack.push(layer);
-  }
-  return this;
-};
+methods.forEach(function(method) {
+  Route.prototype[method] = function(handlers) {
+    this.methods[method] = true;
+    for (let i = 0; i < handlers.length; i++) {
+      let layer = new Layer('/', handlers[i]); // 路径为 / 表示都匹配，以外层的 layer 为准，实际上 path 没有被使用
+      layer.method = method;
+      this.stack.push(layer);
+    }
+    return this;
+  };
+});
 
 Route.prototype.dispatch = function(req, res, out) {
   let idx = 0;

@@ -1,7 +1,8 @@
 // 实现 Router 和 app 的分离
 const Router = require('./router');
 const http = require('http');
-const url = require('url');
+const methods = require('methods'); // 返回所有方法字符串的数组
+// http.METHODS 都是大写，而 methods 中都是小写
 // 用于将类数组转换为数组
 const slice = Array.prototype.slice;
 function Application() {}
@@ -11,12 +12,14 @@ Application.prototype.lazyrouter = function() {
     this._router = new Router();
   }
 };
-Application.prototype.get = function() {
-  // 使用到时，才进行初始化
-  this.lazyrouter();
-  this._router.get.apply(this._router, slice.call(arguments));
-  return this;
-};
+methods.forEach(function(method) {
+  Application.prototype[method] = function() {
+    // 使用到时，才进行初始化
+    this.lazyrouter();
+    this._router.get.apply(this._router, slice.call(arguments));
+    return this;
+  };
+});
 
 Application.prototype.listen = function() {
   let self = this;
