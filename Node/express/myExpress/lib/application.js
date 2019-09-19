@@ -21,6 +21,12 @@ methods.forEach(function(method) {
   };
 });
 
+Application.prototype.param = function() {
+  this.lazyrouter();
+  this._router.param.apply(this._router, arguments);
+  return this;
+};
+
 // 添加中间件，中间件和普通路由都是放在一个数组中的，放在 this._router.stack
 Application.prototype.use = function() {
   this.lazyrouter();

@@ -26,6 +26,9 @@ function Router() {
   Object.setPrototypeOf(router, proto);
   router.stack = [];
 
+  //声明一个对象，用来缓存 路径参数名 对应的 回调函数 数组
+  router.paramCallbacks = {};
+
   return router;
 }
 // 配合 Object.setPrototypeOf 进行一定的简写
@@ -49,6 +52,53 @@ proto.use = function(path, handler) {
   layer.route = undefined; // 中间件，没有 route
   this.stack.push(layer);
   return this;
+};
+
+proto.param = function(name, handler) {
+  if (!this.paramCallbacks[name]) {
+    this.paramCallbacks[name] = [];
+  }
+  // {uid: [handle1,hander2]}
+  this.paramCallbacks[name].push(handler);
+};
+
+// 用来处理路径参数，处理完成后会走 out 函数
+proto.process_params = function(layer, req, res, out) {
+  let keys = layer.keys;
+  let self = this;
+  //用来处理路径参数
+  let paramIndex = 0, // 索引
+    key, // 单个 param 对象
+    name, // 参数名
+    val, // 参数值
+    callbacks,
+    callback;
+
+  // 调用一次 param 意味着处理一个路径参数
+  function param() {
+    if (paramIndex >= keys.length) {
+      return out();
+    }
+    key = keys[paramIndex++]; //先取出当前的 key
+    name = key.name; // uid
+    val = layer.params[name];
+    callbacks = self.paramCallbacks[name]; // 取出等待执行的回调函数数组
+    if (!val || !callbacks) {
+      //如果当前的 key 没有值或者没有对应的回调就直接处理下一个参数
+      return param();
+    }
+    execCallback(); // 开始执行回调
+  }
+  let callbackIndex = 0;
+  function execCallback() {
+    callback = callbacks[callbackIndex++];
+    if (!callback) {
+      return param(); // 所有回调执行完毕，处理下一个参数
+    }
+    // 回调中执行 execCallback 即 next 才能继续执行下一个回调
+    callback(req, res, execCallback, val, name);
+  }
+  param();
 };
 
 methods.forEach(function(method) {
@@ -118,7 +168,13 @@ proto.handle = function(req, res, out) {
           if (err) {
             layer.handle_error(err, req, res, next);
           } else {
-            layer.handle_request(req, res, next);
+            //把 layer 的 parmas 属性拷贝给 req.params 上
+            req.params = layer.params;
+            // 进行参数处理
+            self.process_params(layer, req, res, () => {
+              // 这个函数就是 out，处理完参数之后，就执行路由回调
+              layer.handle_request(req, res, next);
+            });
           }
         } else {
           next(err); // 匹配下一层
@@ -129,4 +185,5 @@ proto.handle = function(req, res, out) {
     }
   })();
 };
+
 module.exports = Router;
