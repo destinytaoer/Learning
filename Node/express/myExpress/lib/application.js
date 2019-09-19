@@ -6,12 +6,10 @@ const methods = require('methods'); // 返回所有方法字符串的数组
 // http.METHODS 都是大写，而 methods 中都是小写
 // 用于将类数组转换为数组
 const slice = Array.prototype.slice;
-const init = require('./middle/init');
 
 function Application() {
   this.settings = {};
   this.engines = {}; // 用来保存文件扩展名和渲染函数
-  this.use(init);
 }
 // 延迟初始化 Router，只有当需要的时候再进行 Router 的初始化，节省性能
 Application.prototype.lazyrouter = function() {

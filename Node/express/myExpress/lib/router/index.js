@@ -16,6 +16,7 @@ const Layer = require('./layer');
 const url = require('url');
 const slice = Array.prototype.slice;
 const methods = require('methods');
+const init = require('../middle/init');
 
 function Router() {
   // 将 Router 从构造函数变成普通函数
@@ -28,6 +29,9 @@ function Router() {
 
   //声明一个对象，用来缓存 路径参数名 对应的 回调函数 数组
   router.paramCallbacks = {};
+
+  // 路由加载后才添加的中间件
+  router.use(init);
 
   return router;
 }
