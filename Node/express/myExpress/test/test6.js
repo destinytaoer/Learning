@@ -19,7 +19,7 @@ user.use('/2', function(req, res, next) {
   res.end('2');
 });
 app.use('/user', user);
-// app.use(function(err, req, res, next) {
-//   res.end('catch ' + err);
-// });
+app.use(function(err, req, res, next) {
+  res.end('catch ' + err);
+});
 app.listen(8080);

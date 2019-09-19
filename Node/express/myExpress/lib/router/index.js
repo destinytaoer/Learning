@@ -105,7 +105,11 @@ proto.handle = function(req, res, out) {
         if (err) {
           layer.handle_error(err, req, res, next);
         } else {
-          layer.handle_request(req, res, next);
+          if (layer.handler.length !== 4) {
+            layer.handle_request(req, res, next);
+          } else {
+            next();
+          }
         }
       } else {
         // 路由
