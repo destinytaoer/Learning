@@ -9,7 +9,7 @@ function Application() {}
 // 延迟初始化 Router，只有当需要的时候再进行 Router 的初始化，节省性能
 Application.prototype.lazyrouter = function() {
   if (!this._router) {
-    this._router = new Router();
+    this._router = Router();
   }
 };
 methods.forEach(function(method) {
@@ -20,6 +20,13 @@ methods.forEach(function(method) {
     return this;
   };
 });
+
+// 添加中间件，中间件和普通路由都是放在一个数组中的，放在 this._router.stack
+Application.prototype.use = function() {
+  this.lazyrouter();
+  this._router.use.apply(this._router, arguments);
+  return this;
+};
 
 Application.prototype.listen = function() {
   let self = this;

@@ -44,7 +44,7 @@ Route.prototype.dispatch = function(req, res, out) {
     if ((layer.method = req.method.toLowerCase())) {
       layer.handle_request(req, res, next);
     } else {
-      next();
+      next(err);
     }
   })();
 };

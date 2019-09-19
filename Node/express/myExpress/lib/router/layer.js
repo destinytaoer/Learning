@@ -4,7 +4,13 @@ function Layer(path, handler) {
 }
 // 判断这一层和传入的路径是否匹配
 Layer.prototype.match = function(path) {
-  return this.path === path;
+  // 路由是精确匹配
+  if (this.path === path) return true;
+  if (!this.route) {
+    // 如果是中间件，则匹配开头即可
+    return this.path === '/' || path.startsWith(this.path + '/');
+  }
+  return false;
 };
 // 执行普通的路由回调
 Layer.prototype.handle_request = function(req, res, next) {
