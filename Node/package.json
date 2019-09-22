@@ -14,9 +14,12 @@
     "cookie-parser": "^1.4.4",
     "ejs": "^2.6.1",
     "express": "^4.16.4",
+    "express-session": "^1.16.2",
     "http-proxy": "^1.17.0",
     "mime": "^2.4.4",
+    "mkdirp": "^0.5.1",
     "user-agent-parse": "^0.1.8",
+    "uuid": "^3.3.3",
     "yargs": "^14.0.0"
   }
 }
