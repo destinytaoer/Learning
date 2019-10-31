@@ -20,6 +20,9 @@ function Promise(task) {
 
   // resolve 和 reject 是一个函数
   function resolve(value) {
+    if (value instanceof Promise) {
+      return value.then(resolve, reject);
+    }
     setTimeout(() => {
       if (that.status === PENDING) {
         // 状态凝固
