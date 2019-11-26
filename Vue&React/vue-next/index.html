@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>document</title>
+    <script src="./packages/vue/dist/vue.global.js"></script>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script>
+      const { createApp, reactive, computed, effect } = Vue;
+      const component = {
+        template: `
+        <p>count:{{state.count}}</p>
+        <p>double:{{state.double}}</p>
+        <button @click="increment">+</button>
+      `,
+        setup() {
+          const state = reactive({
+            count: 0,
+            double: computed(() => state.count * 2)
+          });
+          effect(() => {
+            // 副作用, 有点像监听 watch
+            // 页面加载时就会触发
+            // 这里只会监听这个函数内使用了的 state
+            console.log('每次 count 变化都触发', state.count);
+          });
+          effect(() => {
+            console.log('除了第一次, 就是不触发');
+          });
+          function increment() {
+            state.count += 1;
+          }
+          return {
+            state,
+            increment
+          };
+        }
+      };
+      createApp().mount(component, '#app');
+    </script>
+  </body>
+</html>
