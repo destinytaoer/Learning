@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>document</title>
+  </head>
+  <body>
+    <div id="app"></div>
+    <button id="btn">+</button>
+    <script src="./vue3.js"></script>
+    <script>
+      let app = document.querySelector('#app');
+      let btn = document.querySelector('#btn');
+
+      let obj = reactive({
+        count: 0,
+        double: computed(() => obj.count * 2)
+      });
+      effect(() => {
+        app.innerHTML = `<p>${obj.count}</p><p>${obj.double.value}</p>`;
+      });
+      btn.addEventListener('click', () => {
+        obj.count++;
+      });
+    </script>
+  </body>
+</html>
