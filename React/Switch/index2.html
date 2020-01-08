@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>document</title>
+</head>
+<body>
+  <div class="app"></div>
+  <script>
+    class Switch {
+      constructor() {
+        this.state = {turn: false}; 
+      }
+      createDOMFromString(str) {
+        let oDiv = document.createElement('div');
+        oDiv.innerHTML = str;
+        return oDiv.firstElementChild;
+      }
+      setState(newState) {
+        Object.assign(this.state, {turn: newState});
+        let oldEl = this.el;
+        let newEl = this.render(); // 重新渲染
+        oldEl.parentNode.replaceChild(newEl, oldEl); // 替换成新元素
+      }
+      change(e) {
+        this.setState(e.target.checked);
+      }
+      render() {
+        this.el = this.createDOMFromString(`
+          <div>
+            <input type="checkbox" class="switch" ${this.state.turn ? 'checked' : ''}>
+            <p class="text">${this.state.turn ?'开':'关'}</p>
+          </div>
+        `)
+        this.el.firstElementChild.addEventListener('change', this.change.bind(this), false);
+        return this.el;
+      }
+    }
+    let app = document.querySelector('.app');
+    app.appendChild(new Switch().render());
+    app.appendChild(new Switch().render());
+  </script>
+  <style>
+    .switch {
+      position: relative;
+      -webkit-appearance: none;
+      width: 50px;
+      height: 32px;
+      border: 1px solid #dfdfdf;
+      border-radius: 30px;
+      outline: none;
+      background: linear-gradient(to right, green 0, green 0) no-repeat;
+      background-size: 16px 50px;
+      transition: all 0.2s linear;
+    }
+
+    .switch:checked {
+      background-size: 34px 50px;
+    }
+    .switch::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      box-shadow: 0 0 2px 1px #dfdfdf;
+      background: #fff;
+      transition: all 0.2s linear;
+    }
+    .switch:checked::before {
+      left: 18px;
+    }
+  </style>
+</body>
+</html>
