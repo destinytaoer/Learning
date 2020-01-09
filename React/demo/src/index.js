@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM, { render } from 'react-dom'
-import './jsx2'
+import './functional'
 /**
  * react 主要有两个部分
  * react
