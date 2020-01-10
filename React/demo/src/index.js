@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM, { render } from 'react-dom'
-import './basic/uncontrol'
+import './redux/react-redux'
 /**
  * react 主要有两个部分
  * react

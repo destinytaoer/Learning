@@ -12,7 +12,14 @@ function reducer(state = {number: 0}, action) {
 // 3. 创建容器
 let store = createStore(reducer);
 
-// 4. 进行派发
+// 4. 订阅状态
+function render() {
+  text.innnerHTML = store.getState().number
+}
+render();
+store.subscribe(render);
+
+// 5. 进行派发
 store.dispatch({
   type: INCREMENT,
   number: 1

@@ -1,4 +1,4 @@
-function createStore(reducer) {
+export default function createStore(reducer) {
   let state; // 此时还是 undefined
   let listeners = []; // 存放所有的监听函数
 
@@ -25,28 +25,28 @@ function createStore(reducer) {
     subscribe
   }
 }
-const CHANGE_TITLE = 'change_title'
-function reducer(state = { title: '标题' }, action) {
-  switch (action.type) {
-    case CHANGE_TITLE:
-      return {...state, title: action.content}
-  }
-  return state;
-}
+// const CHANGE_TITLE = 'change_title'
+// function reducer(state = { title: '标题' }, action) {
+//   switch (action.type) {
+//     case CHANGE_TITLE:
+//       return {...state, title: action.content}
+//   }
+//   return state;
+// }
 
-let store = createStore(reducer);
-function render() {
-  document.querySelector('.title').innerHTML = store.getState().title;
-}
-render();
+// let store = createStore(reducer);
+// function render() {
+//   document.querySelector('.title').innerHTML = store.getState().title;
+// }
+// render();
 
-store.subscribe(render);
-let unSubscribe = store.subscribe(render);
+// store.subscribe(render);
+// let unSubscribe = store.subscribe(render);
 
-setTimeout(() => {
-  store.dispatch({
-    type: CHANGE_TITLE,
-    content: '长标题'
-  })
-  unSubscribe()
-}, 2000);
+// setTimeout(() => {
+//   store.dispatch({
+//     type: CHANGE_TITLE,
+//     content: '长标题'
+//   })
+//   unSubscribe()
+// }, 2000);
