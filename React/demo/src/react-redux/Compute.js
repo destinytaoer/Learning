@@ -3,12 +3,12 @@ import store from './store'
 export default class Compute extends React.Component {
   constructor() {
     super();
-    this.state = {n: store.getState().number}
+    this.state = {n: store.getState().counter.number}
   }
   componentDidMount() {
     this.unSubscribe = store.subscribe(() => {
       this.setState({
-        n: store.getState().number
+        n: store.getState().counter.number
       })
     })
   }
