@@ -1,29 +1,21 @@
 import React, { Component } from 'react'
-import store from '../store'
-import {addTodo} from '../store/actions/todo'
-export default class Todo extends Component {
-  constructor() {
-    super();
-    this.state = {todos: store.getState().todo}
-  }
-  componentDidMount() {
-    this.unSubscribe = store.subscribe(() => {
-      this.setState({
-        todos: store.getState().todo
-      })
-    })
+import { connect } from "react-redux";
+import * as actions from '../store/actions/todo'
+class Todo extends Component {
+  constructor(props) {
+    super(props);
   }
   render() {
     return (
       <div>
         <input type="text" onKeyUp={(e) => {
           if (e.keyCode === 13) {
-            store.dispatch(addTodo(e.target.value));e.target.value = ''
+            this.props.addTodo(e.target.value);e.target.value = ''
           }
           
         }}/>
         <ul>
-          {this.state.todos.map((item, index) => (
+          {this.props.todos.map((item, index) => (
           <li key={index}>{item}</li>
         ))}
         </ul>
@@ -31,3 +23,5 @@ export default class Todo extends Component {
     )
   }
 }
+
+export default connect((state) => ({todos: state.todo}), actions)(Todo);

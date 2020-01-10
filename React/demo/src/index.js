@@ -1,5 +1,6 @@
 import React from 'react'
-import ReactDOM, { render } from 'react-dom'
+import { render } from 'react-dom'
+import { Provider } from "react-redux";
 /**
  * react 主要有两个部分
  * react
@@ -9,8 +10,10 @@ import ReactDOM, { render } from 'react-dom'
  */
 import Counter from "./components/Counter";
 import Todo from "./components/Todo";
-
-render(<div>
-  <Counter/>
-  <Todo/>
-</div>, window.root)
+import store from './store'
+render(<Provider store={store}>
+  <div>
+    <Counter/>
+    <Todo/>
+  </div>
+</Provider>, window.root)
