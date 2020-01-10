@@ -10,10 +10,12 @@ import { Provider } from "react-redux";
  */
 import Counter from "./components/Counter";
 import Todo from "./components/Todo";
+import Username from './components/Username'
+import Password from './components/Password'
 import store from './store'
 render(<Provider store={store}>
   <div>
-    <Counter/>
-    <Todo/>
+    <Username/>
+    <Password/>
   </div>
 </Provider>, window.root)
