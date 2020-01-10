@@ -7,10 +7,10 @@ import ReactDOM, { render } from 'react-dom'
  * import 必须放置在页面的顶部
  * ReactDOM 中常用的就是 render 函数
  */
-import Counter from "./react-redux/Counter";
-import Compute from "./react-redux/Compute";
+import Counter from "./components/Counter";
+import Todo from "./components/Todo";
 
 render(<div>
   <Counter/>
-  <Compute/>
+  <Todo/>
 </div>, window.root)
