@@ -19,13 +19,14 @@ import User from './containers/User'
 import Detail from './containers/Detail'
 import store from './store'
 import { HashRouter as Router, Route, Switch, Redirect } from "react-router-dom";
+import ProtectedRoute from './ProtectedRoute'
 render(<Provider store={store}>
   <Router>
     <App>
       <Switch>
         <Route path="/" exact={true} component={Home}/>
         <Route path="/profile" component={Profile}/>
-        <Route path="/user" component={User} />
+        <ProtectedRoute path="/user" component={User} />
         <Route path="/detail/:id" component={Detail} />
         {/* 最后匹配不到,就使用这个组件,路径不会变, 一般用于 404*/}
         <Route component={Home}></Route>
