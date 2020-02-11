@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Learn PWA</title>
+</head>
+<body>
+  <h1>Hello PWA</h1>
+  <script>
+    navigator.serviceWorker.register('./sw.js', {scope: '/pwa/'}).then(registration => {
+      console.log(registration)
+    }, error => {
+      console.log(error)
+    })
+  </script>
+</body>
+</html>
