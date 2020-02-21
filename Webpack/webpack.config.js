@@ -1,5 +1,6 @@
 // webpack 是基于 Node 的
 let path = require('path');
+let HtmlWebpackPlugin = require('html-webpack-plugin');
 module.exports = {
   devServer: {
     port: 5000,
@@ -15,5 +16,16 @@ module.exports = {
     filename: 'bundle.js',
     // 路径必须是绝对路径
     path: path.resolve(__dirname, 'dist')
-  }
+  },
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: './src/index.html',
+      filename: 'index.html',
+      minify: {
+        removeAttributeQuotes: true, // 去除属性中的引号
+        collapseWhitespace: true // 折叠空格, 会将代码变成一行
+      },
+      hash: true // 给引入的打包文件一个 hash 戳,防止缓存生效
+    })
+  ]
 };
