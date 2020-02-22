@@ -1,6 +1,7 @@
 // webpack 是基于 Node 的
 let path = require('path');
 let HtmlWebpackPlugin = require('html-webpack-plugin');
+let MiniCssExtractPlugin = require('mini-css-extract-plugin');
 module.exports = {
   devServer: {
     port: 5000,
@@ -26,6 +27,9 @@ module.exports = {
         collapseWhitespace: true // 折叠空格, 会将代码变成一行
       },
       hash: true // 给引入的打包文件一个 hash 戳,防止缓存生效
+    }),
+    new MiniCssExtractPlugin({
+      filename: 'index.css' // 抽离出来的文件名
     })
   ],
   module: {
@@ -36,7 +40,7 @@ module.exports = {
       },
       {
         test: /\.less$/,
-        use: ['style-loader', 'css-loader', 'less-loader']
+        use: [MiniCssExtractPlugin.loader, 'css-loader', 'less-loader']
       }
     ]
   }
