@@ -27,5 +27,36 @@ module.exports = {
       },
       hash: true // 给引入的打包文件一个 hash 戳,防止缓存生效
     })
-  ]
+  ],
+  module: {
+    rules: [
+      {
+        test: /\.css$/,
+        use: [
+          {
+            loader: 'style-loader',
+            options: {
+              insert: function insertAtTop(element) {
+                var parent = document.querySelector('head');
+                // eslint-disable-next-line no-underscore-dangle
+                var lastInsertedElement = window._lastElementInsertedByStyleLoader;
+
+                if (!lastInsertedElement) {
+                  parent.insertBefore(element, parent.firstChild);
+                } else if (lastInsertedElement.nextSibling) {
+                  parent.insertBefore(element, lastInsertedElement.nextSibling);
+                } else {
+                  parent.appendChild(element);
+                }
+
+                // eslint-disable-next-line no-underscore-dangle
+                window._lastElementInsertedByStyleLoader = element;
+              }
+            }
+          },
+          'css-loader'
+        ]
+      }
+    ]
+  }
 };
