@@ -10,7 +10,7 @@ module.exports = {
     progress: true
   },
   // 模式, 默认有两种: production/development
-  mode: 'development',
+  mode: 'production',
   entry: './src/index.js', // 入口
   output: {
     // 打包后的文件名
@@ -36,11 +36,11 @@ module.exports = {
     rules: [
       {
         test: /\.css$/,
-        use: ['style-loader', 'css-loader']
+        use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader']
       },
       {
         test: /\.less$/,
-        use: [MiniCssExtractPlugin.loader, 'css-loader', 'less-loader']
+        use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader', 'less-loader']
       }
     ]
   }
