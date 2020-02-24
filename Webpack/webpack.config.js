@@ -4,11 +4,12 @@ let HtmlWebpackPlugin = require('html-webpack-plugin');
 let MiniCssExtractPlugin = require('mini-css-extract-plugin');
 let OptimizeCssAssetsWebpackPlugin = require('optimize-css-assets-webpack-plugin');
 let UglifyjsWebpackPlugin = require('uglifyjs-webpack-plugin');
+let webpack = require('webpack');
 
 module.exports = {
   devServer: {
     port: 5000,
-    open: true,
+    // open: true,
     contentBase: './dist',
     progress: true
   },
@@ -33,10 +34,17 @@ module.exports = {
     }),
     new MiniCssExtractPlugin({
       filename: 'index.css' // 抽离出来的文件名
+    }),
+    new webpack.ProvidePlugin({
+      $: 'jquery'
     })
   ],
   module: {
     rules: [
+      // {
+      //   test: require.resolve('jquery'),
+      //   use: { loader: 'expose-loader', options: '$' }
+      // },
       {
         test: /\.js$/,
         use: {

@@ -2,6 +2,7 @@ import str from './a.js';
 import './index.css';
 import './index.less';
 import '@babel/polyfill';
+// import 'jquery';
 
 console.log(str);
 
@@ -32,3 +33,6 @@ function* gen() {
 console.log(gen().next());
 
 console.log(['a'].includes('a'));
+
+console.log(window.$);
+console.log($);
