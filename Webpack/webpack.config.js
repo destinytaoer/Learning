@@ -41,6 +41,31 @@ module.exports = {
   ],
   module: {
     rules: [
+      {
+        test: /\.html$/,
+        use: 'html-withimg-loader'
+      },
+      // {
+      //   test: /\.(png|gif|jpg)$/,
+      //   use: {
+      //     loader: 'file-loader',
+      //     options: {
+      //       esModule: false,
+      //       outputPath: 'assets' // 打包后放置的目录
+      //     }
+      //   }
+      // },
+      {
+        test: /\.(png|gif|jpg)$/,
+        use: {
+          loader: 'url-loader',
+          options: {
+            limit: 1,
+            esModule: false,
+            outputPath: 'assets'
+          }
+        }
+      },
       // {
       //   test: require.resolve('jquery'),
       //   use: { loader: 'expose-loader', options: '$' }

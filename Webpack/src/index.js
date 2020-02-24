@@ -3,7 +3,7 @@ import './index.css';
 import './index.less';
 import '@babel/polyfill';
 // import 'jquery';
-
+import logo from './logo.jpg';
 console.log(str);
 
 let fn = () => {
@@ -36,3 +36,9 @@ console.log(['a'].includes('a'));
 
 console.log(window.$);
 console.log($);
+
+// webpack 打包图片
+let image = new Image();
+image.src = logo;
+
+document.body.appendChild(image);
