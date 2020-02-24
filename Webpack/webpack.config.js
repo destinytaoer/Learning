@@ -13,7 +13,7 @@ module.exports = {
     progress: true
   },
   // 模式, 默认有两种: production/development
-  mode: 'production',
+  mode: 'development',
   entry: './src/index.js', // 入口
   output: {
     // 打包后的文件名
@@ -37,6 +37,22 @@ module.exports = {
   ],
   module: {
     rules: [
+      {
+        test: /\.js$/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['@babel/preset-env'],
+            plugins: [
+              ['@babel/plugin-proposal-decorators', { legacy: true }],
+              ['@babel/plugin-proposal-class-properties', { loose: true }],
+              '@babel/plugin-transform-runtime'
+            ]
+          }
+        },
+        include: path.resolve(__dirname, 'src'),
+        exclude: /node_modules/
+      },
       {
         test: /\.css$/,
         use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader']
