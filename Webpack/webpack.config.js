@@ -2,6 +2,9 @@
 let path = require('path');
 let HtmlWebpackPlugin = require('html-webpack-plugin');
 let MiniCssExtractPlugin = require('mini-css-extract-plugin');
+let OptimizeCssAssetsWebpackPlugin = require('optimize-css-assets-webpack-plugin');
+let UglifyjsWebpackPlugin = require('uglifyjs-webpack-plugin');
+
 module.exports = {
   devServer: {
     port: 5000,
@@ -42,6 +45,16 @@ module.exports = {
         test: /\.less$/,
         use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader', 'less-loader']
       }
+    ]
+  },
+  optimization: {
+    minimizer: [
+      new UglifyjsWebpackPlugin({
+        cache: true, // 缓存
+        parallel: true, // 是否并发打包
+        sourceMap: true // ES5 - ES6 的代码映射, 方便调试, 因为代码都打包成 ES5 了
+      }),
+      new OptimizeCssAssetsWebpackPlugin()
     ]
   }
 };
