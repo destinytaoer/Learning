@@ -60,6 +60,15 @@ module.exports = {
     // 路径必须是绝对路径
     path: path.resolve(__dirname, 'dist')
   },
+  resolve: {
+    modules: [path.resolve('node_modules')], // 第三方包查找顺序
+    mainFields: ['style', 'main'], // 引入第三方包时, 在其 package.json 中查找文件的字段顺序,默认找到 package.json 中的 main 字段中的路径
+    extensions: ['.js', '.css'], // 拓展名查找顺序
+    alias: {
+      // 别名
+      src: path.resolve('src')
+    }
+  },
   plugins: [
     new HtmlWebpackPlugin({
       template: './src/index.html',

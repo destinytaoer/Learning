@@ -1,10 +1,12 @@
 import str from './a.js';
 import './index.css';
 import './index.less';
+import './style';
 import '@babel/polyfill';
 // import 'jquery';
 import logo from './logo.jpg';
 console.log(str);
+import './components/b';
 
 let fn = () => {
   console.log('fn');
@@ -43,6 +45,6 @@ image.src = logo;
 
 document.body.appendChild(image);
 
-fetch('/api/user')
-  .then(res => res.text())
-  .then(res => console.log('GET /user', res));
+// fetch('/api/user')
+//   .then(res => res.text())
+//   .then(res => console.log('GET /user', res));
