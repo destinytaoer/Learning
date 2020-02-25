@@ -5,6 +5,13 @@ let MiniCssExtractPlugin = require('mini-css-extract-plugin');
 let OptimizeCssAssetsWebpackPlugin = require('optimize-css-assets-webpack-plugin');
 let UglifyjsWebpackPlugin = require('uglifyjs-webpack-plugin');
 let webpack = require('webpack');
+let { CleanWebpackPlugin } = require('clean-webpack-plugin');
+let CopyWebpackPlugin = require('copy-webpack-plugin');
+
+// 三个小插件
+// 1) cleanWebpackPlugin 打包前先清除特定的文件夹或文件, 防止打包时多出来一些文件
+// 2) copyWebpackPlugin 打包时拷贝一些文件或文件夹到 dist 目录下, 不会经过 Webpack 编译
+// 3) bannerPlugin 内置, 设置指定字符串, 会在打包后的 JS 和 CSS 文件开头以注释的形式添加
 
 module.exports = {
   devServer: {
@@ -22,12 +29,12 @@ module.exports = {
   // devtool: 'cheap-module-source-map', // 产生后,可以保留起来,后面用于调试
   // 4. 报错只显示行, 不会显示列, 也不会产生单独文件,集成在打包后的文件中
   // devtool: 'cheap-module-eval-source-map',
-  watch: true,
-  watchOptions: {
-    poll: 1000, //多长时间更新一次，最合理的是 1000，表示一秒问 1000 次
-    aggregateTimeout: 500, // 防抖时间设置
-    ignored: /node_modules/ // 忽略的文件夹
-  },
+  // watch: true,
+  // watchOptions: {
+  //   poll: 1000, //多长时间更新一次，最合理的是 1000，表示一秒问 1000 次
+  //   aggregateTimeout: 500, // 防抖时间设置
+  //   ignored: /node_modules/ // 忽略的文件夹
+  // },
   // 模式, 默认有两种: production/development
   mode: 'development',
   entry: './src/index.js', // 入口
@@ -52,7 +59,10 @@ module.exports = {
     }),
     new webpack.ProvidePlugin({
       $: 'jquery'
-    })
+    }),
+    new CleanWebpackPlugin(), // 默认清空输出目录下所有的文件和文件夹
+    new CopyWebpackPlugin([{ from: './doc', to: './doc' }]),
+    new webpack.BannerPlugin('make 2019 by destiny')
   ],
   module: {
     rules: [
