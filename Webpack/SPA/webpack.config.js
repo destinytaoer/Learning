@@ -15,10 +15,26 @@ let CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
   devServer: {
+    // 1. 使用 proxy 代理
+    // 2. 使用 before 钩子,只适用于 mock 服务
+    // 3. 在 express 中启动 webpack 服务
+    // before(app) {
+    //   app.get('/user', (req, res) => {
+    //     res.end('hello');
+    //   });
+    // },
     port: 5000,
     // open: true,
     contentBase: './dist',
     progress: true
+    // proxy: {
+    //   '/api': {
+    //     target: 'http://localhost:3000', // 代理至 3000 端口
+    //     pathRewrite: {
+    //       '/api': '' // 将 /api 替换掉
+    //     }
+    //   }
+    // }
   },
   // 1. 源码映射, 会单独生成一个 sourcemap 文件
   // 如果报错了, 会标识出源码中报错的行和列

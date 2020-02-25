@@ -43,6 +43,6 @@ image.src = logo;
 
 document.body.appendChild(image);
 
-console.lo('a');
-
-console.log('b');
+fetch('/api/user')
+  .then(res => res.text())
+  .then(res => console.log('GET /user', res));
