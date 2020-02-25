@@ -13,6 +13,15 @@ module.exports = {
     contentBase: './dist',
     progress: true
   },
+  // 1. 源码映射, 会单独生成一个 sourcemap 文件
+  // 如果报错了, 会标识出源码中报错的行和列
+  // devtool: ' source-map', // 增加映射文件, 帮助我们调试源代码
+  // 2. 也是源码映射, 但是不会生成单独的文件, 而是一起打包到 JS 文件中, 报错时仍然会显示源码中的行和列
+  // devtool: 'eval-source-map',
+  // 3. 报错只显示行, 不会显示列, 但是是一个单独的映射文件
+  // devtool: 'cheap-module-source-map', // 产生后,可以保留起来,后面用于调试
+  // 4. 报错只显示行, 不会显示列, 也不会产生单独文件,集成在打包后的文件中
+  devtool: 'cheap-module-eval-source-map',
   // 模式, 默认有两种: production/development
   mode: 'development',
   entry: './src/index.js', // 入口

@@ -42,3 +42,5 @@ let image = new Image();
 image.src = logo;
 
 document.body.appendChild(image);
+
+console.lo('a');
