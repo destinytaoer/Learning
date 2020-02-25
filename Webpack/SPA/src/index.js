@@ -48,3 +48,9 @@ document.body.appendChild(image);
 // fetch('/api/user')
 //   .then(res => res.text())
 //   .then(res => console.log('GET /user', res));
+
+if (DEV) {
+  console.log(DEV);
+} else {
+  console.log('prod');
+}

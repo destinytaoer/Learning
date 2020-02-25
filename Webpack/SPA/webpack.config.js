@@ -70,6 +70,9 @@ module.exports = {
     }
   },
   plugins: [
+    new webpack.DefinePlugin({
+      DEV: '1'
+    }),
     new HtmlWebpackPlugin({
       template: './src/index.html',
       filename: 'index.html',
