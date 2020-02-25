@@ -21,7 +21,13 @@ module.exports = {
   // 3. 报错只显示行, 不会显示列, 但是是一个单独的映射文件
   // devtool: 'cheap-module-source-map', // 产生后,可以保留起来,后面用于调试
   // 4. 报错只显示行, 不会显示列, 也不会产生单独文件,集成在打包后的文件中
-  devtool: 'cheap-module-eval-source-map',
+  // devtool: 'cheap-module-eval-source-map',
+  watch: true,
+  watchOptions: {
+    poll: 1000, //多长时间更新一次，最合理的是 1000，表示一秒问 1000 次
+    aggregateTimeout: 500, // 防抖时间设置
+    ignored: /node_modules/ // 忽略的文件夹
+  },
   // 模式, 默认有两种: production/development
   mode: 'development',
   entry: './src/index.js', // 入口

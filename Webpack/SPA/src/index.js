@@ -44,3 +44,5 @@ image.src = logo;
 document.body.appendChild(image);
 
 console.lo('a');
+
+console.log('b');
