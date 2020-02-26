@@ -14,28 +14,6 @@ let CopyWebpackPlugin = require('copy-webpack-plugin');
 // 3) bannerPlugin 内置, 设置指定字符串, 会在打包后的 JS 和 CSS 文件开头以注释的形式添加
 
 module.exports = {
-  devServer: {
-    // 1. 使用 proxy 代理
-    // 2. 使用 before 钩子,只适用于 mock 服务
-    // 3. 在 express 中启动 webpack 服务
-    // before(app) {
-    //   app.get('/user', (req, res) => {
-    //     res.end('hello');
-    //   });
-    // },
-    port: 5000,
-    // open: true,
-    contentBase: './dist',
-    progress: true
-    // proxy: {
-    //   '/api': {
-    //     target: 'http://localhost:3000', // 代理至 3000 端口
-    //     pathRewrite: {
-    //       '/api': '' // 将 /api 替换掉
-    //     }
-    //   }
-    // }
-  },
   // 1. 源码映射, 会单独生成一个 sourcemap 文件
   // 如果报错了, 会标识出源码中报错的行和列
   // devtool: ' source-map', // 增加映射文件, 帮助我们调试源代码
@@ -51,8 +29,6 @@ module.exports = {
   //   aggregateTimeout: 500, // 防抖时间设置
   //   ignored: /node_modules/ // 忽略的文件夹
   // },
-  // 模式, 默认有两种: production/development
-  mode: 'development',
   entry: './src/index.js', // 入口
   output: {
     // 打包后的文件名
@@ -70,9 +46,6 @@ module.exports = {
     }
   },
   plugins: [
-    new webpack.DefinePlugin({
-      DEV: '1'
-    }),
     new HtmlWebpackPlugin({
       template: './src/index.html',
       filename: 'index.html',
@@ -147,16 +120,6 @@ module.exports = {
         test: /\.less$/,
         use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader', 'less-loader']
       }
-    ]
-  },
-  optimization: {
-    minimizer: [
-      new UglifyjsWebpackPlugin({
-        cache: true, // 缓存
-        parallel: true, // 是否并发打包
-        sourceMap: true // ES5 - ES6 的代码映射, 方便调试, 因为代码都打包成 ES5 了
-      }),
-      new OptimizeCssAssetsWebpackPlugin()
     ]
   }
 };
