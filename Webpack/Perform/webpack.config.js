@@ -5,6 +5,10 @@ const webpack = require('webpack');
 module.exports = {
   mode: 'development',
   entry: './src/index.js',
+  devServer: {
+    port: 3000,
+    contentBase: './dist'
+  },
   output: {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'dist')
@@ -30,6 +34,10 @@ module.exports = {
     ]
   },
   plugins: [
+    // 引用 DLL 插件
+    new webpack.DllReferencePlugin({
+      manifest: path.resolve(__dirname, 'dist', 'manifest.json')
+    }),
     // 忽略掉 moment 引入 locale 语言包
     new webpack.IgnorePlugin({ resourceRegExp: /\.\/locale/, contextRegExp: /moment/ }),
     new HtmlWebpackPlugin({
