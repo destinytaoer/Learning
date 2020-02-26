@@ -1,6 +1,7 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
+const Happypack = require('happypack');
 
 module.exports = {
   mode: 'development',
@@ -22,18 +23,31 @@ module.exports = {
         // 排除或者限制查找范围, 只使用一个即可
         exclude: /node_modules/,
         include: path.resolve('src'),
-        use: [
-          {
-            loader: 'babel-loader',
-            options: {
-              presets: ['@babel/preset-env', '@babel/preset-react']
-            }
-          }
-        ]
+        use: 'Happypack/loader?id=js'
+        // use: [
+        //   {
+        //     loader: 'babel-loader',
+        //     options: {
+        //       presets: ['@babel/preset-env', '@babel/preset-react']
+        //     }
+        //   }
+        // ]
       }
     ]
   },
   plugins: [
+    // 多线程打包
+    new Happypack({
+      id: 'js',
+      use: [
+        {
+          loader: 'babel-loader',
+          options: {
+            presets: ['@babel/preset-env', '@babel/preset-react']
+          }
+        }
+      ]
+    }),
     // 引用 DLL 插件
     new webpack.DllReferencePlugin({
       manifest: path.resolve(__dirname, 'dist', 'manifest.json')
