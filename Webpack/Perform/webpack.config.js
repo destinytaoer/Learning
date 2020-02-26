@@ -1,5 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const webpack = require('webpack');
 
 module.exports = {
   mode: 'development',
@@ -14,6 +15,9 @@ module.exports = {
     rules: [
       {
         test: /\.(js|jsx)$/,
+        // 排除或者限制查找范围, 只使用一个即可
+        exclude: /node_modules/,
+        include: path.resolve('src'),
         use: [
           {
             loader: 'babel-loader',
@@ -26,6 +30,8 @@ module.exports = {
     ]
   },
   plugins: [
+    // 忽略掉 moment 引入 locale 语言包
+    new webpack.IgnorePlugin({ resourceRegExp: /\.\/locale/, contextRegExp: /moment/ }),
     new HtmlWebpackPlugin({
       template: './public/index.html',
       filename: 'index.html'
