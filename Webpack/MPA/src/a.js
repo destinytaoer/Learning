@@ -1,5 +1,3 @@
-import './a';
-import './b';
-
+console.log('a');
 import $ from 'jquery';
 console.log($);

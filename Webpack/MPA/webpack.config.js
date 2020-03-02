@@ -28,5 +28,27 @@ module.exports = {
       filename: 'other.html',
       chunks: ['other']
     })
-  ]
+  ],
+  optimization: {
+    splitChunks: {
+      // 分割代码块
+      cacheGroups: {
+        // 公共缓存
+        common: {
+          // 公共模块
+          chunks: 'initial', // 在一开始就进行抽离, 不管异步加载模块
+          minSize: 0, //  多大才需要进行缓存
+          minChunks: 2 // 用过几次需要进行缓存
+        },
+        vendor: {
+          // 第三方模块
+          priority: 1,
+          test: /node_modules/,
+          chunks: 'initial',
+          minSize: 0,
+          minChunks: 2
+        }
+      }
+    }
+  }
 };
