@@ -1,3 +1,3 @@
 // export default 'aa';
-let str = 'a';
+let str = 'abd';
 export { str };

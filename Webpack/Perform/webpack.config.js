@@ -7,6 +7,7 @@ module.exports = {
   mode: 'development',
   entry: './src/index.js',
   devServer: {
+    hot: true,
     port: 3000,
     contentBase: './dist'
   },
@@ -57,6 +58,8 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: './public/index.html',
       filename: 'index.html'
-    })
+    }),
+    new webpack.NamedModulesPlugin(),
+    new webpack.HotModuleReplacementPlugin() // 热更新插件
   ]
 };

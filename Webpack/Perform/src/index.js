@@ -1,15 +1,9 @@
-import React from 'react';
-import { render } from 'react-dom';
+import { str } from './source';
 
-function handleClick(e) {
-  return import('./source').then(data => {
-    console.log(data);
+if (module.hot) {
+  module.hot.accept('./source', () => {
+    console.log('文件更新');
   });
 }
 
-render(
-  <div>
-    <button onClick={handleClick}>hello</button>
-  </div>,
-  window.root
-);
+console.log(str);
