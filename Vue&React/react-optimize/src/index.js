@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-
+import { Map, is } from 'immutable';
 /* Fragment */
 // let data = [
 //   { id: 1, name: 'destiny', age: 26 },
@@ -72,7 +72,7 @@ function shallowEqual(obj1, obj2) {
   if (keys1.length !== keys2.length) return false;
 
   for (let key of keys1) {
-    if (!obj2.hasOwnProperty(key) || obj1[key] !== obj2[key]) return false;
+    if (!obj2.hasOwnProperty(key) || !is(obj1[key], obj2[key])) return false;
   }
 
   return true;
@@ -83,16 +83,32 @@ class App extends React.Component {
     this.inputRef = React.createRef();
   }
   state = {
-    counter: { number: 0 },
+    counter: Map({ number: 0 }),
   };
   add = (e) => {
+    // let oldState = this.state;
+    // let amount = parseInt(this.inputRef.current.value);
+    // let newState = {
+    //   ...oldState,
+    //   counter: amount === 0 ? oldState.counter : { number: oldState.counter.number + amount },
+    // };
+    // this.setState(newState);
+
+    // 上面的情况设置了如果 amount 为 0, 那么就还是设置原来的对象, 此时 PureComponent 才会起作用
+    // 如果是每次都返回一个新对象,那么 PureComponent 就不会起作用了
+    // let oldState = this.state;
+    // let amount = parseInt(this.inputRef.current.value);
+    // let newState = {
+    //   ...oldState,
+    //   counter: { number: oldState.counter.number + amount },
+    // };
+    // this.setState(newState);
+
+    // 此时可以使用不可变数据 immutable 库来改造
     let oldState = this.state;
     let amount = parseInt(this.inputRef.current.value);
-    let newState = {
-      ...oldState,
-      counter: amount === 0 ? oldState.counter : { number: oldState.counter.number + amount },
-    };
-    this.setState(newState);
+    oldState.counter = oldState.counter.set('number', oldState.counter.get('number') + amount);
+    this.setState(oldState);
   };
   render() {
     return (
@@ -104,10 +120,10 @@ class App extends React.Component {
     );
   }
 }
-class Counter extends React.PureComponent {
+class Counter extends PureComponent {
   render() {
     console.log('render');
-    return <div>{this.props.counter.number}</div>;
+    return <div>{this.props.counter.get('number')}</div>;
   }
 }
 ReactDOM.render(<App />, document.getElementById('root'));
