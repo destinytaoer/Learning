@@ -84,6 +84,7 @@ class App extends React.Component {
   }
   state = {
     counter: Map({ number: 0 }),
+    title: '计数器',
   };
   add = (e) => {
     // let oldState = this.state;
@@ -113,6 +114,7 @@ class App extends React.Component {
   render() {
     return (
       <div>
+        <MemoTitle title={this.state.title}></MemoTitle>
         <Counter counter={this.state.counter} />
         <input type='text' ref={this.inputRef} />
         <button onClick={this.add}>+</button>
@@ -126,4 +128,18 @@ class Counter extends PureComponent {
     return <div>{this.props.counter.get('number')}</div>;
   }
 }
+
+/* memo 针对函数式组件, 与 PureComponent 功能相似 */
+function memo(FunctionComponent) {
+  return class extends PureComponent {
+    render() {
+      return <FunctionComponent {...this.props} />;
+    }
+  };
+}
+function Title(props) {
+  console.log('title render');
+  return <h1>{props.title}</h1>;
+}
+let MemoTitle = React.memo(Title);
 ReactDOM.render(<App />, document.getElementById('root'));
