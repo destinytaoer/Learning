@@ -11,6 +11,7 @@ let webpack = require('webpack');
 let path = require('psth');
 let MFS = require('memory-fs'); // 是一个内存版的 fs 模块
 let requireFromString = require('require-from-string'); // 从字符串中获取导出内容
+let mfs = new MFS();
 
 class SkeletonWebpackPlugin {
   constructor(options) {
